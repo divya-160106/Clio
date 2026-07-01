@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Search from "./pages/Search";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
+import Library from "./pages/Library";
 
 function App() {
     return (
@@ -38,6 +39,14 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
+                <Route
+                path="/library"
+                element={
+                    <ProtectedRoute>
+                        <Library/>
+                    </ProtectedRoute>
+                }
+            />
             </Routes>
         </BrowserRouter>
     );

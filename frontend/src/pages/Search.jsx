@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import api from "../services/api";
+import ShelfSelector from "../components/ShelfSelector";
 
 export default function Search() {
     const [query, setQuery] = useState("");
@@ -11,10 +12,29 @@ export default function Search() {
         if (!query.trim()) return;
         setLoading(true);
         try {
-            const res = await api.get(
-                `/books?query=${encodeURIComponent(query)}`
-            );
-            setBooks(res.data.results);
+            const res = await api.post("/graphql", {
+            query: `
+                query SearchBooks($query: String!) {
+                    searchBooks(query: $query) {
+                        id
+                        title
+                        author
+                        cover
+                        year
+                        rating
+                        ratingsCount
+                        reviewsCount
+                        subjects
+                        description
+                    }
+                }
+            `,
+            variables: {
+                query,
+            },
+        });
+
+            setBooks(res.data.data.searchBooks);
         } catch (err) {
             console.log(err);
         } finally {
@@ -95,6 +115,7 @@ export default function Search() {
                                         {book.description}
                                     </p>
                                 )}
+                                <ShelfSelector book={book} />
                             </div>
                         </div>
                     ))}
