@@ -1,12 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import api from "../services/api";
 import ShelfSelector from "../components/ShelfSelector";
+import { useNavigate } from "react-router-dom";
 
 export default function Search() {
     const [query, setQuery] = useState("");
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    // Load the saved search query and results from sessionStorage 
+    useEffect(() => {
+        const savedQuery = sessionStorage.getItem("searchQuery");
+        const savedBooks = sessionStorage.getItem("searchResults");
+        if (savedQuery) {
+            setQuery(savedQuery);
+        }
+        if (savedBooks) {
+            setBooks(JSON.parse(savedBooks));
+        }
+    }, []);
 
     async function searchBooks() {
         if (!query.trim()) return;
@@ -35,11 +48,21 @@ export default function Search() {
         });
 
             setBooks(res.data.data.searchBooks);
-        } catch (err) {
-            console.log(err);
-        } finally {
-            setLoading(false);
-        }
+            // Save the search query and results to sessionStorage
+            const results = res.data.data.searchBooks;
+            setBooks(results);
+            sessionStorage.setItem(
+                "searchQuery",
+                query
+            );
+
+            sessionStorage.setItem(
+                "searchResults",
+                JSON.stringify(results)
+            );
+        } 
+        catch (err) { console.log(err);} 
+        finally { setLoading(false);}
     }
 
     return (
@@ -67,7 +90,7 @@ export default function Search() {
                 <div className="books">
                     {books.map((book) => (
                         <div key={book.id} className="card">
-                            <div className="book-cover">
+                            <div  className="book-cover" >
                                 {book.cover ? (
                                     <img
                                         src={book.cover || "/placeholder.png"}
@@ -88,7 +111,7 @@ export default function Search() {
                                 <h3>{book.title}</h3>
                                 <p>
                                     {book.author}
-                                    {book.year ? ` · ${book.year}` : ""}
+                                    {book.year ? `· ${book.year}` : ""}
                                 </p>
 
                                 {book.rating != null && (
@@ -115,7 +138,18 @@ export default function Search() {
                                         {book.description}
                                     </p>
                                 )}
-                                <ShelfSelector book={book} />
+                                <div className="card-actions">
+                                    <div onClick={(e) => e.stopPropagation()}>
+                                        <ShelfSelector book={book} />
+                                    </div>
+                                </div>
+                                    <button
+                                        className="view-btn"
+                                        onClick={() => navigate(`/book/${book.id}`)}
+                                    >
+                                        View Details
+                                    </button>
+                                
                             </div>
                         </div>
                     ))}

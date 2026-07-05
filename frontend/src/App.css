@@ -265,3 +265,42 @@
   color: var(--bg);
   box-shadow: 0 0 12px var(--danger-border);
 }
+
+.view-btn {
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
+  padding: 8px 14px;
+  border: 2px solid var(--accent-border);
+  border-radius: 4px;
+  background: var(--accent-bg);
+  color: var(--text-h);
+  font-family: var(--heading);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+ 
+.view-btn:hover {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 12px var(--accent-border);
+}
+ 
+.view-btn:active {
+  transform: translateY(1px);
+}
+ 
+.card-actions button.secondary {
+  border-color: var(--danger-border);
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+ 
+.card-actions button.secondary:hover {
+  background: var(--danger);
+  color: var(--bg);
+  box-shadow: 0 0 12px var(--danger-border);
+}

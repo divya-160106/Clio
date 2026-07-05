@@ -6,6 +6,7 @@ import Search from "./pages/Search";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
 import Library from "./pages/Library";
+import BookDetails from "./pages/BookDetails";
 
 function App() {
     return (
@@ -46,7 +47,15 @@ function App() {
                         <Library/>
                     </ProtectedRoute>
                 }
-            />
+                />
+                <Route
+                path="/book/:id"
+                element={
+                    <ProtectedRoute>
+                        <BookDetails />
+                    </ProtectedRoute>
+                }
+                />
             </Routes>
         </BrowserRouter>
     );
