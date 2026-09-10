@@ -5,20 +5,16 @@ import "./Navbar.css";
 export default function ShelfSelector({ book, currentShelf, onFinished }) {
 
     const [loading, setLoading] = useState(false);
-    async function handleChange(e) {
-        const shelf = e.target.value;
-        if (!shelf) return;
+    async function handleChange(shelf) {
+        if (!shelf || shelf === currentShelf) return;
         setLoading(true);
         try {
-            if (currentShelf) {
-                await moveBook(book.id, shelf);
-            } else {
-                await addBook(book, shelf);
-            }
-
-            if (onFinished) {
-                onFinished();
-            }
+            if (currentShelf) 
+                { await moveBook(book.id, shelf);} 
+            else 
+                { await addBook(book, shelf); }
+            if (onFinished) 
+                { await onFinished(); }
         }
         finally {
             setLoading(false);
@@ -32,7 +28,7 @@ export default function ShelfSelector({ book, currentShelf, onFinished }) {
                 type="button"
                 disabled={loading}
                 className={`shelf-btn ${currentShelf === option ? "active" : ""}`}
-                onClick={() => handleChange({ target: { value: option } })}
+                onClick={() => handleChange(option)}
             >
                 {option}
             </button>

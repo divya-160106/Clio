@@ -2,11 +2,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.health import router as health_router
 from app.routes.auth import router as auth_router
+from app.routes.library import router as library_router
 from strawberry.fastapi import GraphQLRouter
 from app.graphql.schema import schema
-from app.routes.library import router as library_router
 from contextlib import asynccontextmanager
 from app.database.init_db import init_db
+from app.graphql.context import get_context
 
 #ensuring the database is initialized before handling requests cuz I don't want to complicate my life with race conditions
 @asynccontextmanager
@@ -15,7 +16,7 @@ async def lifespan(app):
     yield
 
 app = FastAPI( lifespan=lifespan )
-graphql_app = GraphQLRouter(schema)
+graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
 app.add_middleware(
     CORSMiddleware,
